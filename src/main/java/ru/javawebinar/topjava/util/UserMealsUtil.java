@@ -45,7 +45,7 @@ public class UserMealsUtil {
                         new UserMealWithExcess(meal.getDateTime(),
                                 meal.getDescription(),
                                 meal.getCalories(),
-                                (caloriesPerDays.get(meal.getDateTime().toLocalDate()) > caloriesPerDay)?true:false));
+                                caloriesPerDays.get(meal.getDateTime().toLocalDate()) > caloriesPerDay));
             }
         }
         return mealsWithExcess;
@@ -63,7 +63,7 @@ public class UserMealsUtil {
                         meal.getDateTime(),
                         meal.getDescription(),
                         meal.getCalories(),
-                        (caloriesPerDays.get(meal.getDateTime().toLocalDate()) > caloriesPerDay)?true:false))
+                        caloriesPerDays.get(meal.getDateTime().toLocalDate()) > caloriesPerDay))
                 .collect(Collectors.toList());
     }
 }
