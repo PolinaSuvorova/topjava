@@ -1,8 +1,7 @@
 package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
-import ru.javawebinar.topjava.exception.NotExistStorageException;
-import ru.javawebinar.topjava.model.MealTo;
+import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.storage.MapMealToStorage;
 import ru.javawebinar.topjava.storage.MealToStorage;
 import ru.javawebinar.topjava.util.DateUtil;
@@ -17,9 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -31,112 +28,99 @@ public class MealServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         storage = new MapMealToStorage();
-        List<MealTo> mealsTo = MealsUtil.filteredByStreams(MealsUtil.MEALS,
-                LocalTime.of(0, 1),
-                LocalTime.of(23, 59),
-                MealsUtil.CALORIES_PER_DAY);
-        for (MealTo mealTo : mealsTo) {
-            storage.save(mealTo);
-        }
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String id = request.getParameter("id");
         String action = request.getParameter("action");
         if (action == null) {
-            request.setAttribute("meals", storage.getAllSorted());
-            request.getRequestDispatcher("/WEB-INF/jsp/meals.jsp")
-                    .forward(request, response);
-            return;
+            action = "";
         }
-        Integer intId = Integer.parseInt(id);
 
-        MealTo mealTo;
+        Integer id = getParamInteger("id", request);
+
+        Meal meal;
         switch (action) {
             case "delete": {
-                storage.delete(intId);
+                storage.delete(id);
                 response.sendRedirect("meals");
+                log.info("Start delete {}", id);
                 return;
             }
-            case "view": {
-                mealTo = storage.get(intId);
-                break;
-            }
             case "edit": {
-                if (Utils.isEmptyInteger(intId)) {
-                    mealTo = new MealTo(null, LocalDateTime.now(), "", 0, false);
+                if (id == null) {
+                    log.info("Start create");
+                    meal = new Meal(null,
+                            LocalDateTime.of(LocalDateTime.now().getYear(),
+                                    LocalDateTime.now().getMonth(),
+                                    LocalDateTime.now().getDayOfMonth(),
+                                    LocalDateTime.now().getHour(),
+                                    LocalDateTime.now().getMinute()),
+                            "", 0);
                 } else {
-                    mealTo = storage.get(Integer.parseInt(id));
+                    meal = storage.get(id);
+                    log.info("Start edit {}", meal.getId());
                 }
                 break;
             }
             default:
-                throw new IllegalArgumentException("Action " + action + " is illegal");
+                log.info("Show List");
+                request.setAttribute("meals",
+                        MealsUtil.filteredByStreams((List<Meal>) storage.getAll(),
+                                LocalTime.MIN,
+                                LocalTime.MAX,
+                                MealsUtil.CALORIES_PER_DAY));
+                request.getRequestDispatcher("meals.jsp")
+                        .forward(request, response);
+                return;
         }
-        request.setAttribute("meal", mealTo);
-        request.getRequestDispatcher(
-                ("view".equals(action) ? "/WEB-INF/jsp/viewmeal.jsp" : "/WEB-INF/jsp/editmeal.jsp")
-        ).forward(request, response);
+        request.setAttribute("meal", meal);
+        request.getRequestDispatcher("editMeal.jsp")
+                .forward(request, response);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-
         String action = request.getParameter("action");
-        String status = request.getParameter("status");
 
         if (action != null && action.equals("back")) {
             response.sendRedirect("meals");
+            log.info("Back");
             return;
         }
 
-        MealTo mealTo;
-        String id = request.getParameter("id");
-
-        LocalDateTime dateTime = DateUtil.inputDateTime(request.getParameter("datetime"));
-        String description = request.getParameter("description");
-        int calories = Integer.parseInt(request.getParameter("calories"));
-        boolean isNew = false;
-        try {
-            mealTo = storage.get(Integer.parseInt(id));
-        } catch (NotExistStorageException er) {
-            mealTo = new MealTo(null, dateTime, description, calories, false);
-            isNew = true;
+        Integer calories = getParamInteger("calories", request);
+        if (calories == null) {
+            calories = 0;
         }
 
-        mealTo.setDescription(description);
-        mealTo.setDateTime(dateTime);
-        mealTo.setCalories(calories);
+        Integer id = getParamInteger("id", request);
+        Meal meal = new Meal(id,
+                DateUtil.inputDateTime(request.getParameter("datetime")),
+                request.getParameter("description"),
+                calories);
 
-        List<String> validate = validate(request);
-        if (validate.isEmpty() && status.equals("save")) {
-            if (isNew) {
-                storage.save(mealTo);
-            } else {
-                storage.update(mealTo.getId(), mealTo);
-            }
+        String status = request.getParameter("status");
+        if (status.equals("save")) {
+            log.info("Save");
+            storage.save(meal);
             response.sendRedirect("meals");
         } else {
+            log.info("Show edit screen { }", meal);
             request.setAttribute("status", "");
-            request.setAttribute("meal", mealTo);
-            request.setAttribute("validate", validate);
-            request.getRequestDispatcher("/WEB-INF/jsp/editmeal.jsp")
+            request.setAttribute("meal", meal);
+            request.getRequestDispatcher("editMeal.jsp")
                     .forward(request, response);
         }
     }
 
-    public List<String> validate(HttpServletRequest request) {
-        String description = request.getParameter("description");
-        List<String> violations = new ArrayList<>();
-        if (Utils.isEmptyString(description)) {
-            violations.add("Название обязательно для ввода");
+
+    private Integer getParamInteger(String nameParam, HttpServletRequest request) {
+        String id = request.getParameter(nameParam);
+        if (!Utils.isEmptyString(id) && !id.equals("null")) {
+            return Integer.parseInt(id);
         }
-        LocalDateTime dateTime = DateUtil.inputDateTime(request.getParameter("datetime"));
-        if (Utils.isEmptyDateTime(dateTime)) {
-            violations.add("Дата обязательна для ввода");
-        }
-        return violations;
+        return null;
     }
 }

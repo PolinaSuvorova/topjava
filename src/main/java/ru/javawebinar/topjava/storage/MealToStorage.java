@@ -1,22 +1,16 @@
 package ru.javawebinar.topjava.storage;
 
-import ru.javawebinar.topjava.model.MealTo;
+import ru.javawebinar.topjava.model.Meal;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface MealToStorage {
-    void clear();
+    Meal save(Meal meal);
 
-    void update(Integer id, MealTo meal);
+    Meal get(int id);
 
-    void save(MealTo meal);
+    void delete(int id);
 
-    MealTo get(Integer id);
-
-    void delete(Integer id);
-
-    List<MealTo> getAllSorted();
-
-    int size();
+    Collection<Meal> getAll();
 
 }
