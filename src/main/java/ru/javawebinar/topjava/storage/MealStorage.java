@@ -4,7 +4,7 @@ import ru.javawebinar.topjava.model.Meal;
 
 import java.util.Collection;
 
-public interface MealToStorage {
+public interface MealStorage {
     Meal save(Meal meal);
 
     Meal get(int id);
@@ -12,5 +12,4 @@ public interface MealToStorage {
     void delete(int id);
 
     Collection<Meal> getAll();
-
 }

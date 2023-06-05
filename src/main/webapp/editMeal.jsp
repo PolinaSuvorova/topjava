@@ -27,6 +27,7 @@
         <dl>
             <input type="datetime-local"
                    name="datetime"
+                   required="true"
                    value="${meal.dateTime}"
                    pattern="[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}">
         </dl>
@@ -34,13 +35,14 @@
         <dl>
             <input type="number"
                    name="calories"
+                   required="true"
                    size=5
                    value="${meal.calories}">
         </dl>
         <hr>
-        <button type="button" name="action" value="save" onclick='setVal("save")'>Сохранить</button>
-        <button type="button" onclick="window.history.go(-1)" name="action" value="back">Отменить</button>
-        <input type="hidden" name='status'>
+
+        <button type="submit">Сохранить</button>
+        <button type="button" onclick="window.history.go(-1)">Отменить</button>
     </form>
 </section>
 </body>

@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: polin
-  Date: 03.06.2023
-  Time: 11:51
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ page import="ru.javawebinar.topjava.util.DateUtil" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -31,7 +24,7 @@
         <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.MealTo"/>
         <c:set var="linecolor" value="${meal.excess ? '#ffc0cb' : '#7fff00'}"/>
         <tr bgcolor=${linecolor}>
-            <td><%=DateUtil.outputDateTime(meal.getDateTime())%></td>
+            <td>${DateUtil.outputDateTime(meal.getDateTime())}</td>
             <td>${meal.description}</td>
             <td>${meal.calories}</td>
             <td><a href="meals?id=${meal.id}&action=delete">Удалить</a></td>
@@ -39,6 +32,5 @@
         </tr>
     </c:forEach>
 </table>
-
 </body>
 </html>

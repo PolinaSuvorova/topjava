@@ -6,11 +6,10 @@ import java.time.LocalTime;
 
 public class Meal {
     private Integer id;
-    private LocalDateTime dateTime;
+    private final LocalDateTime dateTime;
+    private final String description;
 
-    private String description;
-
-    private int calories;
+    private final int calories;
 
     public Meal(LocalDateTime dateTime, String description, int calories) {
         this(null, dateTime, description, calories);
