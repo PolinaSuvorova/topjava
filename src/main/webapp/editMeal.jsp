@@ -47,10 +47,3 @@
 </section>
 </body>
 </html>
-<script>
-    function setVal(buttonCmd) {
-        document.forms['theForm'].status.value = buttonCmd;
-        document.forms['theForm'].submit();
-        return false;
-    }
-</script>

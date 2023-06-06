@@ -4,13 +4,15 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MealStorageMap implements MealStorage {
-    private Map<Integer, Meal> map = new HashMap<>();
+public class InMemoryMealStorage implements MealStorage {
+    private Map<Integer, Meal> storage = new ConcurrentHashMap<>();
+
     private AtomicInteger counter = new AtomicInteger(0);
 
-    public MealStorageMap() {
+    public InMemoryMealStorage() {
         for (Meal meal : MealsUtil.meals) {
             save(meal);
         }
@@ -18,32 +20,27 @@ public class MealStorageMap implements MealStorage {
 
     @Override
     public Meal save(Meal meal) {
-        Integer id;
         if (meal.isIdNull()) {
-            id = counter.incrementAndGet();
-            meal.setId(id);
-        } else {
-            id = meal.getId();
-            if (get(id) == null) {
-                return null;
-            }
+            meal.setId(counter.incrementAndGet());
+            storage.put(meal.getId(), meal);
+            return meal;
         }
-        map.put(id, meal);
-        return meal;
+        return storage.computeIfPresent(meal.getId(), (Integer idOld, Meal oldMeal) -> meal);
     }
 
     @Override
     public Meal get(int id) {
-        return map.get(id);
+        return storage.get(id);
     }
 
     @Override
     public void delete(int id) {
-        map.remove(id);
+        storage.remove(id);
     }
+
     @Override
-    public  List<Meal> getAll() {
-        Meal[] array = map.values().toArray(new Meal[0]);
+    public List<Meal> getAll() {
+        Meal[] array = storage.values().toArray(new Meal[0]);
         return Arrays.asList(Arrays.copyOfRange(array, 0, array.length));
     }
 }

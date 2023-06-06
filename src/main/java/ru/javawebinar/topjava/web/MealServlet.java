@@ -2,7 +2,7 @@ package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.storage.MealStorageMap;
+import ru.javawebinar.topjava.storage.InMemoryMealStorage;
 import ru.javawebinar.topjava.storage.MealStorage;
 import ru.javawebinar.topjava.util.DateUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -27,7 +26,7 @@ public class MealServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        storage = new MealStorageMap();
+        storage = new InMemoryMealStorage();
     }
 
     @Override
@@ -51,14 +50,14 @@ public class MealServlet extends HttpServlet {
                 if (id == null) {
                     log.info("Start create");
                     meal = new Meal(
-                            LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES),
-                            "",
-                            0);
+                            LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 0);
                 } else {
                     meal = storage.get(id);
                     log.info("Start edit {}", meal.getId());
                 }
-                break;
+                request.setAttribute("meal", meal);
+                request.getRequestDispatcher("editMeal.jsp").forward(request, response);
+                return;
             }
             default:
                 log.info("Show List");
@@ -68,22 +67,13 @@ public class MealServlet extends HttpServlet {
                                 LocalTime.MAX,
                                 MealsUtil.CALORIES_PER_DAY));
                 request.getRequestDispatcher("meals.jsp").forward(request, response);
-                return;
         }
-        request.setAttribute("meal", meal);
-        request.getRequestDispatcher("editMeal.jsp").forward(request, response);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        String action = request.getParameter("action");
+            throws IOException {
 
-        if (action != null && action.equals("back")) {
-            response.sendRedirect("meals");
-            log.info("Back");
-            return;
-        }
+        request.setCharacterEncoding("UTF-8");
 
         Integer id = getId(request);
         Meal meal = new Meal(id,
@@ -94,7 +84,6 @@ public class MealServlet extends HttpServlet {
         log.info("Save");
         storage.save(meal);
         response.sendRedirect("meals");
-
     }
 
     private Integer getId(HttpServletRequest request) {
