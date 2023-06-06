@@ -9,7 +9,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class InMemoryMealStorage implements MealStorage {
     private Map<Integer, Meal> storage = new ConcurrentHashMap<>();
-
     private AtomicInteger counter = new AtomicInteger(0);
 
     public InMemoryMealStorage() {
