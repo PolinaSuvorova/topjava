@@ -39,7 +39,6 @@ public class InMemoryMealStorage implements MealStorage {
 
     @Override
     public List<Meal> getAll() {
-        Meal[] array = storage.values().toArray(new Meal[0]);
-        return Arrays.asList(Arrays.copyOfRange(array, 0, array.length));
+        return new ArrayList<>(storage.values());
     }
 }

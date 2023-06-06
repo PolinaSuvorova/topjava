@@ -41,9 +41,9 @@ public class MealServlet extends HttpServlet {
         Meal meal;
         switch (action) {
             case "delete": {
+                log.info("Start delete {}", id);
                 storage.delete(id);
                 response.sendRedirect("meals");
-                log.info("Start delete {}", id);
                 return;
             }
             case "edit": {
@@ -72,7 +72,6 @@ public class MealServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-
         request.setCharacterEncoding("UTF-8");
 
         Integer id = getId(request);
@@ -88,7 +87,7 @@ public class MealServlet extends HttpServlet {
 
     private Integer getId(HttpServletRequest request) {
         String id = request.getParameter("id");
-        if (id != null && !id.isEmpty() && !id.equals("null")) {
+        if (id != null && !id.isEmpty() ) {
             return Integer.parseInt(id);
         }
         return null;
