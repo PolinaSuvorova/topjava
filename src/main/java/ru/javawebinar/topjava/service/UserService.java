@@ -34,8 +34,8 @@ public class UserService {
         return checkNotFound(repository.getByEmail(email), "email=" + email);
     }
 
-    public List getAll() {
-        return (List) repository.getAll();
+    public List<User> getAll() {
+        return repository.getAll();
     }
 
     public void update(User user) {

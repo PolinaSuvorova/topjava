@@ -13,33 +13,32 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
-    MealRestController mealController;
-    ProfileRestController currentUserController;
+    private MealRestController mealController;
+    private ConfigurableApplicationContext appCtx;
 
     @Override
     public void init() {
-        ConfigurableApplicationContext appCtx =
-                new ClassPathXmlApplicationContext("spring/spring-app.xml");
+        appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
         mealController = appCtx.getBean(MealRestController.class);
-        currentUserController = appCtx.getBean(ProfileRestController.class);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.setCharacterEncoding("UTF-8");
         String id = request.getParameter("id");
-        String idUser = request.getParameter("idUser");
         Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
                 Integer.parseInt(request.getParameter("calories")),
-                id.isEmpty() ? SecurityUtil.authUserId() : Integer.valueOf(idUser));//currentUserController.get( ).getId());
+                SecurityUtil.authUserId());
         log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
         if (meal.isNew()) {
             mealController.create(meal);
@@ -63,16 +62,32 @@ public class MealServlet extends HttpServlet {
             case "create":
             case "update":
                 final Meal meal = "create".equals(action) ?
-                        new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000) :
+                        new Meal(
+                                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES),
+                                "", 1000, SecurityUtil.authUserId()) :
                         mealController.get(getId(request));
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;
             case "all":
+            case "filter":
             default:
                 log.info("getAll");
+                String sd = request.getParameter("startDate");
+                String ed = request.getParameter("endDate");
+                String et = request.getParameter("endTime");
+                String st = request.getParameter("startTime");
+                LocalDate startDate = sd != null && !sd.equals("") ? LocalDate.parse(sd) : null;
+                LocalTime startTime = st != null && !st.equals("") ? LocalTime.parse(st) : null;
+                LocalDate endDate = ed != null && !ed.equals("") ? LocalDate.parse(ed) : null;
+                LocalTime endTime = et != null && !et.equals("") ? LocalTime.parse(et) : null;
+
                 request.setAttribute("meals",
-                        mealController.getMealTo());
+                        mealController.getMealsTo(startDate, startTime, endDate, endTime));
+                request.setAttribute("startDate", startDate);
+                request.setAttribute("endDate", endDate);
+                request.setAttribute("endTime", endTime);
+                request.setAttribute("startTime", startTime);
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }
@@ -81,5 +96,10 @@ public class MealServlet extends HttpServlet {
     private int getId(HttpServletRequest request) {
         String paramId = Objects.requireNonNull(request.getParameter("id"));
         return Integer.parseInt(paramId);
+    }
+
+    @Override
+    public void destroy() {
+        appCtx.close();
     }
 }

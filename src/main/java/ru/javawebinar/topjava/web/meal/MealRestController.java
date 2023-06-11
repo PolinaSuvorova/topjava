@@ -5,13 +5,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.User;
-import ru.javawebinar.topjava.repository.inmemory.InMemoryMealRepository;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
+import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
@@ -21,12 +23,7 @@ import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 public class MealRestController {
     @Autowired
     private MealService service;
-    protected final Logger log = LoggerFactory.getLogger(getClass());
-
-    public List<Meal> getAll() {
-        log.info("getAll");
-        return service.getAll(SecurityUtil.authUserId());
-    }
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     public Meal get(int id) {
         log.info("get {}", id);
@@ -50,8 +47,10 @@ public class MealRestController {
         service.update(meal, SecurityUtil.authUserId());
     }
 
-    public List<MealTo> getMealTo() {
-        log.info("getMealTo {}");
-        return service.getAllTo(SecurityUtil.authUserId(), SecurityUtil.authUserCaloriesPerDay());
+    public List<MealTo> getMealsTo(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
+        log.info("getMealTo");
+        return service.getAllTo(SecurityUtil.authUserId(),
+                startDate,
+                endDate, startTime, endTime, SecurityUtil.authUserCaloriesPerDay());
     }
 }
