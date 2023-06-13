@@ -10,7 +10,6 @@ import ru.javawebinar.topjava.web.SecurityUtil;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
@@ -41,7 +40,7 @@ public class MealService {
                 LocalDateTime.MIN;
         LocalDateTime lEndDate = endDate != null ? LocalDateTime.of(endDate, LocalTime.MAX) :
                 LocalDateTime.MAX;
-        List<Meal> list = new ArrayList<>(repository.getAllByDate(userId, lStartDate, lEndDate));
+        List<Meal> list = repository.getAllByDate(userId, lStartDate, lEndDate);
         return MealsUtil.getFilteredTos(list, caloriesPerDay, startTime, endTime);
     }
 
