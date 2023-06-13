@@ -5,12 +5,13 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
+import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
 
@@ -23,28 +24,32 @@ public class MealService {
         this.repository = repository;
     }
 
-    public Meal create(Meal meal) {
-        return repository.save(meal);
+    public Meal create(Meal meal, int userId) {
+        return repository.save(meal, userId);
     }
 
-    public void delete(int id, int idUser) {
-        checkNotFoundWithId(repository.delete(id, idUser), id);
+    public void delete(int id, int userId) {
+        checkNotFoundWithId(repository.delete(id, userId), id);
     }
 
-    public Meal get(int id, int idUser) {
-        return checkNotFoundWithId(repository.get(id, idUser), id);
+    public Meal get(int id, int userId) {
+        return checkNotFoundWithId(repository.get(id, userId), id);
     }
 
-    public List<MealTo> getAllTo(int userId, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
-        List<Meal> list = new ArrayList<>(repository.getAllByDate(userId, startDate, endDate));
+    public List<MealTo> getAllToByFilter(int userId, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
+        LocalDateTime lStartDate = startDate != null ? LocalDateTime.of(startDate, LocalTime.MIN) :
+                LocalDateTime.MIN;
+        LocalDateTime lEndDate = endDate != null ? LocalDateTime.of(endDate, LocalTime.MAX) :
+                LocalDateTime.MAX;
+        List<Meal> list = new ArrayList<>(repository.getAllByDate(userId, lStartDate, lEndDate));
         return MealsUtil.getFilteredTos(list, caloriesPerDay, startTime, endTime);
     }
 
-    public List<Meal> getAll(int userId) {
-        return repository.getAll(userId);
+    public List<MealTo> getAll(int userId) {
+        return MealsUtil.getTos(repository.getAll(userId), SecurityUtil.authUserCaloriesPerDay());
     }
 
-    public void update(Meal meal) {
-        checkNotFoundWithId(repository.save(meal), meal.getId());
+    public void update(Meal meal, int userId) {
+        checkNotFoundWithId(repository.save(meal, userId), meal.getId());
     }
 }

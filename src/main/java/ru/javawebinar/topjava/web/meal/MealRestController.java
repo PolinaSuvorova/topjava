@@ -7,7 +7,6 @@ import org.springframework.stereotype.Controller;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
-import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDate;
@@ -31,8 +30,8 @@ public class MealRestController {
     public Meal create(Meal meal) {
         log.info("create {}", meal);
         checkNew(meal);
-        Meal lMeal = new Meal(meal.getId(),meal.getDateTime(),meal.getDescription(),meal.getCalories(),SecurityUtil.authUserId());
-        return service.create(lMeal);
+        Meal lMeal = new Meal(meal.getId(), meal.getDateTime(), meal.getDescription(), meal.getCalories(), SecurityUtil.authUserId());
+        return service.create(lMeal, SecurityUtil.authUserId());
     }
 
     public void delete(int id) {
@@ -43,19 +42,18 @@ public class MealRestController {
     public void update(Meal meal, int id) {
         log.info("update meal {} with id={}", meal, id);
         assureIdConsistent(meal, id);
-        Meal lMeal = new Meal(meal.getId(),meal.getDateTime(),meal.getDescription(),meal.getCalories(),SecurityUtil.authUserId());
-        service.update(lMeal);
+        service.update(meal, SecurityUtil.authUserId());
     }
 
     public List<MealTo> getAll() {
         int userId = SecurityUtil.authUserId();
         log.info("getAll for user {}", userId);
-        return MealsUtil.getTos(service.getAll(userId), SecurityUtil.authUserCaloriesPerDay());
+        return service.getAll(userId);
     }
 
     public List<MealTo> getMealsTo(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
         log.info("getMealTo");
-        return service.getAllTo(SecurityUtil.authUserId(),
+        return service.getAllToByFilter(SecurityUtil.authUserId(),
                 startDate, endDate, startTime, endTime, SecurityUtil.authUserCaloriesPerDay());
     }
 }
