@@ -39,7 +39,6 @@ public class InMemoryMealRepository implements MealRepository {
             repository.put(userId, mealForUser);
             return meal;
         } else {
-            synchronized (repository) {
                 Map<Integer, Meal> mealsForUser = repository.get(userId);
                 if (mealsForUser == null) {
                     return null;
@@ -56,7 +55,6 @@ public class InMemoryMealRepository implements MealRepository {
                 repository.computeIfPresent(userId, (userId1, oldMapMeal) -> mealsForUser);
                 return saveMeal;
             }
-        }
     }
 
     @Override
