@@ -31,13 +31,10 @@ public class InMemoryMealRepository implements MealRepository {
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
             meal.setUserId(userId);
-            Map<Integer, Meal> mealForUser = repository.get(userId);
-            if (mealForUser == null) {
-                mealForUser = new ConcurrentHashMap<>();
-            }
-            mealForUser.putIfAbsent(meal.getId(), meal);
+            Map<Integer, Meal> mealForUser = new ConcurrentHashMap<>();
             repository.putIfAbsent(userId, mealForUser);
-            return meal;
+            Map<Integer, Meal> mealsForUser = repository.get(userId);
+            return mealsForUser.putIfAbsent(meal.getId(), meal);
         } else {
             Map<Integer, Meal> mealsForUser = repository.get(userId);
             if (mealsForUser == null) {
