@@ -30,8 +30,7 @@ public class MealRestController {
     public Meal create(Meal meal) {
         log.info("create {}", meal);
         checkNew(meal);
-        Meal lMeal = new Meal(meal.getId(), meal.getDateTime(), meal.getDescription(), meal.getCalories());//, SecurityUtil.authUserId());
-        return service.create(lMeal, SecurityUtil.authUserId());
+        return service.create(meal, SecurityUtil.authUserId());
     }
 
     public void delete(int id) {
