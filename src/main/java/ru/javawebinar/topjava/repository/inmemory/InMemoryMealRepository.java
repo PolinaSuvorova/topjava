@@ -23,29 +23,21 @@ public class InMemoryMealRepository implements MealRepository {
     private final AtomicInteger counter = new AtomicInteger(0);
 
     {
-        MealsUtil.meals.forEach(meal -> save(meal, meal.getUserId()));
+        MealsUtil.meals.forEach(meal -> save(meal, 1));
     }
 
     @Override
     public Meal save(Meal meal, int userId) {
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
-            meal.setUserId(userId);
-            Map<Integer, Meal> mealForUser = repository.get(userId);
-            if (mealForUser == null) {
-                mealForUser = new ConcurrentHashMap<>();
+            Map<Integer, Meal> meals = repository.putIfAbsent(userId, new ConcurrentHashMap<>());
+            if (meals == null) {
+                meals = repository.get(userId);
             }
-            Meal mealReturn = mealForUser.putIfAbsent(meal.getId(), meal);
-            repository.putIfAbsent(userId, mealForUser);
-            return mealReturn;
+            return meals.putIfAbsent(meal.getId(), meal);
         } else {
             Map<Integer, Meal> mealsForUser = repository.get(userId);
             if (mealsForUser == null) {
-                return null;
-            }
-            Meal mealInMem = mealsForUser.get(meal.getId());
-            meal.setUserId(userId);
-            if (mealInMem == null || !checkUserId(mealInMem, meal.getUserId())) {
                 return null;
             }
             Meal saveMeal = mealsForUser.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
@@ -60,7 +52,7 @@ public class InMemoryMealRepository implements MealRepository {
     @Override
     public boolean delete(int id, int userId) {
         Meal meal = repository.get(userId).get(id);
-        if (meal == null ) {
+        if (meal == null) {
             return false;
         }
         return repository.get(userId).remove(id) != null;
@@ -82,14 +74,14 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
     public List<Meal> filterByPredicate(int userId, Predicate<Meal> filter) {
-        return repository.get(userId).values().stream()
+        Map<Integer, Meal> mealUser = repository.get(userId);
+        if (mealUser == null) {
+            return null;
+        }
+        return mealUser.values().stream()
                 .filter(filter)
                 .sorted(MEAL_COMPARATOR)
                 .collect(Collectors.toList());
-    }
-
-    private boolean checkUserId(Meal meal, int userId) {
-        return meal.getUserId() == userId;
     }
 }
 

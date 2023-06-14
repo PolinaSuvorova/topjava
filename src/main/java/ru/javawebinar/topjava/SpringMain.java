@@ -26,7 +26,7 @@ public class SpringMain {
 
             MealRestController mealController = appCtx.getBean(MealRestController.class);
             mealController.create(new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0),
-                    "Тест Завтрак", 500, 2));
+                    "Тест Завтрак", 500));
             List<MealTo> meals = mealController.getMealsTo(LocalDate.MIN, LocalTime.MIN, LocalDate.MAX, LocalTime.MAX);
             for (MealTo mealTo : meals) {
                 System.out.println(mealTo);
