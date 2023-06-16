@@ -26,8 +26,8 @@
         <!--    Tests  -->
         <junit.version>4.13.2</junit.version>
         <assertj.version>3.24.2</assertj.version>
-    </properties>
 
+    </properties>
     <build>
         <finalName>topjava</finalName>
         <defaultGoal>package</defaultGoal>
@@ -40,7 +40,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>                                                                                                    3.11.0</version>
+                <version>3.11.0</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
@@ -54,6 +54,7 @@
                     <argLine>-Dfile.encoding=UTF-8</argLine>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 
@@ -96,7 +97,6 @@
             <artifactId>spring-jdbc</artifactId>
             <version>${spring.version}</version>
         </dependency>
-
         <!--DataBase-->
         <dependency>
             <groupId>org.postgresql</groupId>
