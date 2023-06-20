@@ -18,7 +18,6 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
         "classpath:spring/spring-app.xml",
         "classpath:spring/spring-inmemory-test.xml"
 })
-@ActiveProfiles(profiles = "")
 @RunWith(SpringRunner.class)
 public class InMemoryAdminRestControllerSpringTest {
 
