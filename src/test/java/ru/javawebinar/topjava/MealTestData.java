@@ -31,13 +31,11 @@ public class MealTestData {
 
     public static Meal getNew() {
         Meal meal = new Meal(null, of(2020, Month.FEBRUARY, 1, 18, 0), "Созданный ужин", 300);
-        meal.setUser(UserTestData.user);
         return meal;
     }
 
     public static Meal getUpdated() {
         Meal meal = new Meal(MEAL1_ID, meal1.getDateTime().plus(2, ChronoUnit.MINUTES), "Обновленный завтрак", 200);
-        meal.setUser(UserTestData.user);
         return meal;
     }
 }
