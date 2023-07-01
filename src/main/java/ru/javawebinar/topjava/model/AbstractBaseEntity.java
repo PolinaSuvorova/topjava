@@ -60,4 +60,8 @@ public abstract class AbstractBaseEntity {
     public int hashCode() {
         return id == null ? 0 : id;
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/master
