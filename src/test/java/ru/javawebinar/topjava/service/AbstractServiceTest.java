@@ -46,6 +46,6 @@ public abstract class AbstractServiceTest {
                 "\n---------------------------------" +
                 results +
                 "\n---------------------------------");
-        results = new StringBuilder();
+      results = new StringBuilder();
     }
 }
