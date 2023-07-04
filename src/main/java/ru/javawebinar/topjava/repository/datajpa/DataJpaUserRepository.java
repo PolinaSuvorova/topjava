@@ -19,7 +19,6 @@ public class DataJpaUserRepository implements UserRepository {
     }
 
     @Override
-    @Transactional
     public User save(User user) {
         return crudRepository.save(user);
     }
@@ -44,7 +43,8 @@ public class DataJpaUserRepository implements UserRepository {
         return crudRepository.findAll(SORT_NAME_EMAIL);
     }
 
+    @Override
     public User getWithMeals(int id) {
-        return crudRepository.findAllMeal(id);
+        return crudRepository.findWithMeals(id);
     }
 }
