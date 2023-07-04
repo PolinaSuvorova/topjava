@@ -32,12 +32,6 @@ public class InMemoryUserRepository extends InMemoryBaseRepository<User> impleme
     }
 
     @Override
-    @Ignore
-    public List<Meal> getMeals(int id) {
-        return null;
-    }
-
-    @Override
     public User getByEmail(String email) {
         Objects.requireNonNull(email, "email must not be null");
         return getCollection().stream()

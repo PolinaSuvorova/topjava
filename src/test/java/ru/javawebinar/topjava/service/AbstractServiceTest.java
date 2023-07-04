@@ -32,6 +32,8 @@ public abstract class AbstractServiceTest {
     @Rule
     // http://stackoverflow.com/questions/14892125/what-is-the-best-practice-to-determine-the-execution-time-of-the-bussiness-relev
     public final Stopwatch stopwatch = new Stopwatch() {
+
+        @Override
         protected void finished(long nanos, Description description) {
             String result = String.format("\n%-25s %7d", description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos));
             results.append(result);
@@ -46,6 +48,6 @@ public abstract class AbstractServiceTest {
                 "\n---------------------------------" +
                 results +
                 "\n---------------------------------");
-      results = new StringBuilder();
+        results.setLength(0);
     }
 }

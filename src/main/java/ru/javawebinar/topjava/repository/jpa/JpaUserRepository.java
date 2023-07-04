@@ -72,8 +72,4 @@ public class JpaUserRepository implements UserRepository {
                 .getResultList();
     }
 
-    @Override
-    public List<Meal> getMeals(int id) {
-        return null;
-    }
 }
