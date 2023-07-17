@@ -2,16 +2,16 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://topjava.javawebinar.ru/functions" %>
-
+<base href="${pageContext.request.contextPath}/"/>
 <html>
-<jsp:include page="fragments/headTagMeal.jsp"/>
+<jsp:include page="fragments/headTag.jsp"/>
 
 <body>
 <section>
     <h3><a href="index.jsp">Home</a></h3>
     <hr/>
     <h2>Meals</h2>
-    <form method="get" action="${pageContext.request.contextPath}/filter">
+    <form method="get" action="meals/filter">
         <dl>
             <dt>From Date (inclusive):</dt>
             <dd><input type="date" name="startDate" value="${param.startDate}"></dd>
@@ -31,7 +31,7 @@
         <button type="submit">Filter</button>
     </form>
     <hr/>
-    <a href="${pageContext.request.contextPath}/create">Add Meal</a>
+    <a href="meals/create">Add Meal</a>
     <br><br>
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>
@@ -54,8 +54,8 @@
                 </td>
                 <td>${meal.description}</td>
                 <td>${meal.calories}</td>
-                <td><a href="${pageContext.request.contextPath}/update?id=${meal.id}">Update</a></td>
-                <td><a href="${pageContext.request.contextPath}/delete?id=${meal.id}">Delete</a></td>
+                <td><a href="meals/update?id=${meal.id}">Update</a></td>
+                <td><a href="meals/delete?id=${meal.id}">Delete</a></td>
             </tr>
         </c:forEach>
     </table>
