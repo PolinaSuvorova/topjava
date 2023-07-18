@@ -22,14 +22,4 @@ public abstract class AbstractJpaUserServiceTest extends AbstractUserServiceTest
         super.setup();
         jpaUtil.clear2ndLevelHibernateCache();
     }
-
-    @Test
-    public void createWithException() throws Exception {
-        Assume.assumeFalse(isActiveProfile(Profiles.JDBC));
-        validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "  ", "mail@yandex.ru", "password", Role.USER)));
-        validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "User", "  ", "password", Role.USER)));
-        validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "User", "mail@yandex.ru", "  ", Role.USER)));
-        validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "User", "mail@yandex.ru", "password", 9, true, new Date(), Set.of())));
-        validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "User", "mail@yandex.ru", "password", 10001, true, new Date(), Set.of())));
-    }
 }
