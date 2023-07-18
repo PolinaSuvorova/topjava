@@ -38,14 +38,14 @@ public class JspMealController  extends AbstractMealController {
     }
 
     @GetMapping("/update")
-    public String setUpdateForm(HttpServletRequest request) {
+    public String getUpdateForm(HttpServletRequest request) {
         final Meal meal = super.get(getId(request));
         request.setAttribute("meal", meal);
         return "mealForm";
     }
 
     @GetMapping("/create")
-    public String setCreateForm(HttpServletRequest request) {
+    public String getCreateForm(HttpServletRequest request) {
         final Meal meal = new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000);
         request.setAttribute("meal", meal);
         return "mealForm";

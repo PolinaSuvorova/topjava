@@ -1,7 +1,9 @@
 package ru.javawebinar.topjava.service;
 
+import org.junit.Assume;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import ru.javawebinar.topjava.Profiles;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.JpaUtil;
@@ -11,7 +13,8 @@ import java.util.Date;
 import java.util.Set;
 
 public abstract class AbstractJpaUserServiceTest extends AbstractUserServiceTest {
-    @Autowired()
+
+    @Autowired
     protected JpaUtil jpaUtil;
 
     @Override
@@ -22,6 +25,7 @@ public abstract class AbstractJpaUserServiceTest extends AbstractUserServiceTest
 
     @Test
     public void createWithException() throws Exception {
+        Assume.assumeFalse(isActiveProfile(Profiles.JDBC));
         validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "  ", "mail@yandex.ru", "password", Role.USER)));
         validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "User", "  ", "password", Role.USER)));
         validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "User", "mail@yandex.ru", "  ", Role.USER)));
