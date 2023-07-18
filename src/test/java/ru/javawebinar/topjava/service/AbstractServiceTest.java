@@ -49,7 +49,8 @@ public abstract class AbstractServiceTest {
             }
         });
     }
+
     protected boolean isActiveProfile(String profile) {
-        return Arrays.stream(env.getActiveProfiles()).collect(Collectors.toList()).contains(profile);
+        return Arrays.stream(env.getActiveProfiles()).toList().contains(profile);
     }
 }

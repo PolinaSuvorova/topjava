@@ -89,6 +89,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
         List<User> all = service.getAll();
         USER_MATCHER.assertMatch(all, admin, guest, user);
     }
+
     @Test
     public void createWithException() throws Exception {
         Assume.assumeFalse(isActiveProfile(Profiles.JDBC));
