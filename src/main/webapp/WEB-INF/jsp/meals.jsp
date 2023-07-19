@@ -2,10 +2,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://topjava.javawebinar.ru/functions" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <jsp:include page="fragments/headTag.jsp"/>
 <body>
-<base href="${pageContext.request.contextPath}/"/>
+<jsp:include page="fragments/bodyHeader.jsp"/>
 <section>
     <hr/>
     <h2><spring:message code="meal.title"/></h2>
