@@ -6,7 +6,15 @@ import org.springframework.lang.NonNull;
 import ru.javawebinar.topjava.model.AbstractBaseEntity;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+
 public class ValidationUtil {
+
+    private static final ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+    private static final Validator validator = validatorFactory.getValidator();
+
 
     private ValidationUtil() {
     }

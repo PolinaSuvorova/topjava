@@ -13,9 +13,7 @@ import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Repository
 @Transactional(readOnly = true)
@@ -28,9 +26,6 @@ public class JdbcUserRepository implements UserRepository {
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     private final SimpleJdbcInsert insertUser;
-
-    @Autowired
-    private RoleExtractor roleExtractor;
 
     @Autowired
     public JdbcUserRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
@@ -79,14 +74,14 @@ public class JdbcUserRepository implements UserRepository {
         insertRoles(user);
     }
 
+    private void deleteRoles(int id) {
+        jdbcTemplate.update("DELETE FROM user_role WHERE user_id=?", id);
+    }
+
     @Override
     @Transactional
     public boolean delete(int id) {
         return jdbcTemplate.update("DELETE FROM users WHERE id=?", id) != 0;
-    }
-
-    private void deleteRoles(int id) {
-        jdbcTemplate.update("DELETE FROM user_role WHERE user_id=?", id);
     }
 
     @Override
@@ -102,20 +97,7 @@ public class JdbcUserRepository implements UserRepository {
         return setRoles(DataAccessUtils.singleResult(users));
     }
 
-    @Override
-    public List<User> getAll() {
-        List<User> users = jdbcTemplate.query(
-                "SELECT * FROM users ORDER BY name, email", ROW_MAPPER);
-        Map<Integer, List<Role>> roles = jdbcTemplate.query("SELECT * FROM user_role", roleExtractor);
-        if (roles != null) {
-            for (User u : users) {
-                u.setRoles(roles.get(u.getId()));
-            }
-        }
-        return users;
-    }
-
-    public User setRoles(User user) {
+    private User setRoles(User user) {
         if (user == null) {
             return null;
         }
@@ -123,6 +105,29 @@ public class JdbcUserRepository implements UserRepository {
                 Role.class, user.getId());
         user.setRoles(roles);
         return user;
+    }
 
+    @Override
+    public List<User> getAll() {
+        List<User> users = jdbcTemplate.query(
+                "SELECT * FROM users ORDER BY name, email", ROW_MAPPER);
+
+        Map<Integer, Set<Role>> map = new HashMap<>();
+        jdbcTemplate.query("SELECT * FROM user_role",
+                rs -> {
+                    map.computeIfAbsent(rs.getInt("user_id"), userId -> EnumSet.noneOf(Role.class))
+                            .add(Role.valueOf(rs.getString("role")));
+                });
+        users.forEach(user -> {
+            user.setRoles(map.get(user.getId()));
+        });
+        return users;
+    }
+
+    @Override
+    public User getWithMeals(int id) {
+        User usr = get(id);
+        usr.getMeals();
+        return get(id);
     }
 }

@@ -51,6 +51,6 @@ public abstract class AbstractServiceTest {
     }
 
     protected boolean isActiveProfile(String profile) {
-        return Arrays.stream(env.getActiveProfiles()).toList().contains(profile);
+       return Arrays.asList(env.getActiveProfiles()).contains(profile);
     }
 }

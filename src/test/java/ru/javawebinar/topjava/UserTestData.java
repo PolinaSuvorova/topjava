@@ -10,7 +10,7 @@ import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
 
 public class UserTestData {
     public static final MatcherFactory.Matcher<User> USER_MATCHER =
-            MatcherFactory.usingIgnoringFieldsComparator("registered", "meals");
+            MatcherFactory.usingIgnoringFieldsComparator("registered","meals");
     public static final int USER_ID = START_SEQ;
     public static final int ADMIN_ID = START_SEQ + 1;
     public static final int GUEST_ID = START_SEQ + 2;
@@ -25,7 +25,7 @@ public class UserTestData {
     }
 
     public static User getUpdated() {
-        User updated = new User(user);
+        User updated = new User(admin);
         updated.setEmail("update@gmail.com");
         updated.setName("UpdatedName");
         updated.setCaloriesPerDay(330);
