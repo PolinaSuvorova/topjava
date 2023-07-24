@@ -12,7 +12,6 @@ import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Objects;
 
 @NamedQueries({
         @NamedQuery(name = Meal.ALL_SORTED, query = "SELECT m FROM Meal m WHERE m.user.id=:userId ORDER BY m.dateTime DESC"),
@@ -113,18 +112,5 @@ public class Meal extends AbstractBaseEntity {
                 ", description='" + description + '\'' +
                 ", calories=" + calories +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Meal meal)) return false;
-        if (!super.equals(o)) return false;
-        return getCalories() == meal.getCalories() && Objects.equals(getDateTime(), meal.getDateTime()) && Objects.equals(getDescription(), meal.getDescription()) && Objects.equals(getUser(), meal.getUser());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), getDateTime(), getDescription(), getCalories(), getUser());
     }
 }

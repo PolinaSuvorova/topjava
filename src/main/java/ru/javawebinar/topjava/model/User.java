@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.*;
 import org.hibernate.validator.constraints.Range;
-import org.springframework.data.web.SortDefault;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.Entity;

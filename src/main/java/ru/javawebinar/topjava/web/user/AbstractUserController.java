@@ -50,7 +50,7 @@ public abstract class AbstractUserController {
         return service.getByEmail(email);
     }
 
-    public User getWithMealsByAuthUserId( ) {
-        return service.getWithMeals(SecurityUtil.authUserId());
+    public User getWithMealsId(int id ) {
+        return service.getWithMeals(id);
     }
 }

@@ -14,7 +14,9 @@ public class MealTo {
 
     private boolean excess;
 
-    public MealTo(){};
+    public MealTo() {
+    }
+
     public MealTo(Integer id, LocalDateTime dateTime, String description, int calories, boolean excess) {
         this.id = id;
         this.dateTime = dateTime;
@@ -57,8 +59,16 @@ public class MealTo {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof MealTo mealTo)) return false;
-        return getCalories() == mealTo.getCalories() && isExcess() == mealTo.isExcess() && Objects.equals(getId(), mealTo.getId()) && Objects.equals(getDateTime(), mealTo.getDateTime()) && Objects.equals(getDescription(), mealTo.getDescription());
+
+        if (!getClass().equals(o.getClass())) {
+            return false;
+        }
+        MealTo mealTo = (MealTo) o;
+        return this.calories == mealTo.getCalories() &&
+                this.excess == mealTo.isExcess() &&
+                Objects.equals(this.id, mealTo.getId()) &&
+                Objects.equals(this.dateTime, mealTo.getDateTime()) &&
+                Objects.equals(this.description, mealTo.getDescription());
     }
 
     @Override

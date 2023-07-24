@@ -58,7 +58,7 @@ public class AdminRestController extends AbstractUserController {
     }
 
     @GetMapping("/with-meals")
-    public User getWithMealsByAuthUser() {
-        return super.getWithMealsByAuthUserId();
+    public User getWithMeals(@RequestParam int id) {
+        return super.getWithMealsId(id);
     }
 }

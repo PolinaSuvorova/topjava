@@ -11,7 +11,7 @@ public class Util {
         return (start == null || value.compareTo(start) >= 0) && (end == null || value.compareTo(end) < 0);
     }
 
-    public static <T extends Comparable<T>> boolean isBetweenHalfClose(T value, @Nullable T start, @Nullable T end) {
+    public static <T extends Comparable<T>> boolean isBetweenClosed(T value, @Nullable T start, @Nullable T end) {
         return (start == null || value.compareTo(start) >= 0) && (end == null || value.compareTo(end) <= 0);
     }
 }

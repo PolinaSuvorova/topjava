@@ -87,7 +87,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void getWithMealsByAuthUserId() throws Exception {
+    public void getWithMeals() throws Exception {
         SecurityUtil.setAuthUserId(ADMIN_ID);
 
         ResultActions resultAction = perform(MockMvcRequestBuilders.get(REST_URL + "with-meals"))
@@ -99,5 +99,18 @@ class AdminRestControllerTest extends AbstractControllerTest {
         User adminActual = USER_MATCHER.readFromJson(resultAction);
         MealTestData.MEAL_MATCHER.assertMatch(adminActual.getMeals(), MealTestData.adminMeal2, MealTestData.adminMeal1);
     }
+    @Test
+    public void getWithMealsOtherUser() throws Exception {
+        SecurityUtil.setAuthUserId(ADMIN_ID);
 
+        ResultActions resultAction = perform(MockMvcRequestBuilders.get(REST_URL + "with-meals?id=" + USER_ID))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(USER_MATCHER.contentJson(user));
+
+        User userActual = USER_MATCHER.readFromJson(resultAction);
+        MealTestData.MEAL_MATCHER.assertMatch(userActual.getMeals(),
+                MealTestData.meals);
+    }
 }
