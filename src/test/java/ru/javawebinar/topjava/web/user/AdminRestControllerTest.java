@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.web.user;
 
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -17,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.javawebinar.topjava.Profiles.DATAJPA;
 import static ru.javawebinar.topjava.UserTestData.*;
 
 class AdminRestControllerTest extends AbstractControllerTest {
@@ -88,19 +90,24 @@ class AdminRestControllerTest extends AbstractControllerTest {
 
     @Test
     public void getWithMeals() throws Exception {
+        Assumptions.assumeTrue(isProfile(DATAJPA));
         SecurityUtil.setAuthUserId(ADMIN_ID);
 
-        ResultActions resultAction = perform(MockMvcRequestBuilders.get(REST_URL + "with-meals"))
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(USER_MATCHER.contentJson(admin));
+        ResultActions resultAction =
+                perform(MockMvcRequestBuilders.get(REST_URL + "with-meals")
+                        .param("id", String.valueOf(ADMIN_ID)))
+                        .andExpect(status().isOk())
+                        .andDo(print())
+                        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                        .andExpect(USER_MATCHER.contentJson(admin));
 
         User adminActual = USER_MATCHER.readFromJson(resultAction);
         MealTestData.MEAL_MATCHER.assertMatch(adminActual.getMeals(), MealTestData.adminMeal2, MealTestData.adminMeal1);
     }
+
     @Test
     public void getWithMealsOtherUser() throws Exception {
+        Assumptions.assumeTrue(isProfile(DATAJPA));
         SecurityUtil.setAuthUserId(ADMIN_ID);
 
         ResultActions resultAction = perform(MockMvcRequestBuilders.get(REST_URL + "with-meals?id=" + USER_ID))

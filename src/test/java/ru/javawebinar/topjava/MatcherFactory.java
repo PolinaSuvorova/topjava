@@ -21,29 +21,17 @@ public class MatcherFactory {
         return new Matcher<>(clazz, fieldsToIgnore);
     }
 
-    public static <T> Matcher<T> usingFieldsComparator(Class<T> clazz) {
-        return new Matcher<>(clazz);
-    }
-
     public static class Matcher<T> {
         private final Class<T> clazz;
-        private String[] fieldsToIgnore;
+        private final String[] fieldsToIgnore;
 
         private Matcher(Class<T> clazz, String... fieldsToIgnore) {
             this.clazz = clazz;
             this.fieldsToIgnore = fieldsToIgnore;
         }
 
-        private Matcher(Class<T> clazz) {
-            this.clazz = clazz;
-        }
-
         public void assertMatch(T actual, T expected) {
-            if (fieldsToIgnore == null) {
-                assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
-            } else {
-                assertThat(actual).usingRecursiveComparison().ignoringFields(fieldsToIgnore).isEqualTo(expected);
-            }
+            assertThat(actual).usingRecursiveComparison().ignoringFields(fieldsToIgnore).isEqualTo(expected);
         }
 
         @SafeVarargs
@@ -52,11 +40,7 @@ public class MatcherFactory {
         }
 
         public void assertMatch(Iterable<T> actual, Iterable<T> expected) {
-            if (fieldsToIgnore == null) {
-                assertThat(actual).usingRecursiveFieldByFieldElementComparator().isEqualTo(expected);
-            } else {
-                assertThat(actual).usingRecursiveFieldByFieldElementComparator().isEqualTo(expected);
-            }
+            assertThat(actual).usingRecursiveFieldByFieldElementComparatorIgnoringFields(fieldsToIgnore).isEqualTo(expected);
         }
 
         public ResultMatcher contentJson(T expected) {
