@@ -73,6 +73,6 @@ public class MealTo {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getDateTime(), getDescription(), getCalories(), isExcess());
+        return Objects.hash(this.id, this.dateTime, this.description, this.calories, this.excess);
     }
 }

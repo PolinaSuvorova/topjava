@@ -1,4 +1,4 @@
-package ru.javawebinar.topjava.util.formatter;
+package ru.javawebinar.topjava.web.formatter;
 
 import org.springframework.format.AnnotationFormatterFactory;
 import org.springframework.format.Formatter;
@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class CustomDateTimeFormatAnnotationFormatterFactory implements AnnotationFormatterFactory<CustomDateTimeFormat> {
+public class DateTimeFormatAnnotationFormatterFactory implements AnnotationFormatterFactory<DateTimeFormat> {
 
     @Override
     public Set<Class<?>> getFieldTypes() {
@@ -19,22 +19,22 @@ public class CustomDateTimeFormatAnnotationFormatterFactory implements Annotatio
     }
 
     @Override
-    public Printer<?> getPrinter(CustomDateTimeFormat annotation, Class<?> fieldType) {
+    public Printer<?> getPrinter(DateTimeFormat annotation, Class<?> fieldType) {
         return getFormatter(annotation, fieldType);
     }
 
     @Override
-    public Parser<?> getParser(CustomDateTimeFormat annotation, Class<?> fieldType) {
+    public Parser<?> getParser(DateTimeFormat annotation, Class<?> fieldType) {
         return getFormatter(annotation, fieldType);
     }
 
-    private Formatter<?> getFormatter(CustomDateTimeFormat annotation, Class<?> fieldType) {
+    private Formatter<?> getFormatter(DateTimeFormat annotation, Class<?> fieldType) {
         switch (annotation.type()) {
             case DATE -> {
-                return new CustomDateFormatter();
+                return new DateFormatter();
             }
             case TIME -> {
-                return new CustomTimeFormatter();
+                return new TimeFormatter();
             }
         }
         return null;

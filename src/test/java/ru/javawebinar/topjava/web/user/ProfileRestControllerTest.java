@@ -35,7 +35,6 @@ class ProfileRestControllerTest extends AbstractControllerTest {
 
     @Test
     void delete() throws Exception {
-        SecurityUtil.setAuthUserId(USER_ID);
         perform(MockMvcRequestBuilders.delete(REST_URL))
                 .andExpect(status().isNoContent());
         USER_MATCHER.assertMatch(userService.getAll(), admin, guest);
@@ -48,15 +47,12 @@ class ProfileRestControllerTest extends AbstractControllerTest {
                 .content(JsonUtil.writeValue(updated)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
-
         USER_MATCHER.assertMatch(userService.get(USER_ID), updated);
     }
 
     @Test
     public void getWithMeals() throws Exception {
         Assumptions.assumeTrue(isProfile(DATAJPA));
-        SecurityUtil.setAuthUserId(USER_ID);
-
         ResultActions resultAction = perform(MockMvcRequestBuilders.get(REST_URL + "/with-meals"))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -71,8 +67,6 @@ class ProfileRestControllerTest extends AbstractControllerTest {
     @Test
     public void getWithMealsOtherUser() throws Exception {
         Assumptions.assumeTrue(isProfile(DATAJPA));
-        SecurityUtil.setAuthUserId(USER_ID);
-
         perform(MockMvcRequestBuilders.get(REST_URL + "with-meals?id=" + ADMIN_ID))
                 .andExpect(status().isNotFound())
                 .andDo(print());

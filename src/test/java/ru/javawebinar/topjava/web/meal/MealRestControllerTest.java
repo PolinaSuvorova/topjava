@@ -24,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
+import static ru.javawebinar.topjava.UserTestData.user;
 
 class MealRestControllerTest extends AbstractControllerTest {
     private static final String REST_URL = MealRestController.REST_URL + '/';
@@ -48,14 +49,14 @@ class MealRestControllerTest extends AbstractControllerTest {
         assertThrows(NotFoundException.class, () -> mealService.get(MEAL1_ID, USER_ID));
     }
 
-//    @Test
-//    void getAll() throws Exception {
-//        perform(MockMvcRequestBuilders.get(REST_URL))
-//                .andExpect(status().isOk())
-//                .andDo(print())
-//                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-//                .andExpect(MEAL_TO_MATCHER.contentJson(MealsUtil.getTos(meals, user.getCaloriesPerDay())));
-//    }
+    @Test
+    void getAll() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL))
+                .andExpect(status().isOk())
+               .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(MEAL_TO_MATCHER.contentJson(MealsUtil.getTos(meals, user.getCaloriesPerDay())));
+    }
 
     @Test
     void createWithLocation() throws Exception {
@@ -63,6 +64,7 @@ class MealRestControllerTest extends AbstractControllerTest {
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newMeal)))
+                .andDo(print())
                 .andExpect(status().isCreated());
 
         Meal created = MEAL_MATCHER.readFromJson(action);
@@ -78,6 +80,7 @@ class MealRestControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.put(REST_URL + MEAL1_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updated)))
+                .andDo(print())
                 .andExpect(status().isNoContent());
 
         MEAL_MATCHER.assertMatch(mealService.get(MEAL1_ID, USER_ID), updated);
@@ -85,12 +88,12 @@ class MealRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getFilteredData() throws Exception {
-        List<MealTo> mealsTo = new ArrayList<>();
-        mealsTo.add(MealsUtil.createTo(meal5, true));
-        mealsTo.add(MealsUtil.createTo(meal1, false));
+        List<MealTo> mealsTo = List.of(
+                MealsUtil.createTo(meal5, true),
+                MealsUtil.createTo(meal1, false));
 
         perform(MockMvcRequestBuilders.get(
-                REST_URL + "/filter?startDate={1}&startTime={2}&endDate={3}&endTime={4}",
+                REST_URL + "filter?startDate={1}&startTime={2}&endDate={3}&endTime={4}",
                 "2020-01-30", "10:00", "2020-01-31", "11:00"))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -101,11 +104,10 @@ class MealRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getFilteredDataWithNullParams() throws Exception {
-        List<MealTo> mealsTo = new ArrayList<>();
-        mealsTo = MealsUtil.getTos(meals, SecurityUtil.authUserCaloriesPerDay());
+        List<MealTo> mealsTo = MealsUtil.getTos(meals, SecurityUtil.authUserCaloriesPerDay());
 
         perform(MockMvcRequestBuilders.get(
-                REST_URL + "/filter?startDate=&startTime=&endDate="))
+                REST_URL + "filter?startDate=&startTime=&endDate="))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))

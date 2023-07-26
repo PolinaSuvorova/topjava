@@ -9,6 +9,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.javawebinar.topjava.MealTestData;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.UserService;
+import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.SecurityUtil;
@@ -91,33 +92,28 @@ class AdminRestControllerTest extends AbstractControllerTest {
     @Test
     public void getWithMeals() throws Exception {
         Assumptions.assumeTrue(isProfile(DATAJPA));
-        SecurityUtil.setAuthUserId(ADMIN_ID);
-
         ResultActions resultAction =
-                perform(MockMvcRequestBuilders.get(REST_URL + "with-meals")
-                        .param("id", String.valueOf(ADMIN_ID)))
+                perform(MockMvcRequestBuilders.get(REST_URL + USER_ID + "/with-meals"))
                         .andExpect(status().isOk())
                         .andDo(print())
                         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                        .andExpect(USER_MATCHER.contentJson(admin));
+                        .andExpect(USER_MATCHER.contentJson(user));
 
         User adminActual = USER_MATCHER.readFromJson(resultAction);
-        MealTestData.MEAL_MATCHER.assertMatch(adminActual.getMeals(), MealTestData.adminMeal2, MealTestData.adminMeal1);
+        MealTestData.MEAL_MATCHER.assertMatch(adminActual.getMeals(), MealTestData.meals);
     }
 
     @Test
     public void getWithMealsOtherUser() throws Exception {
         Assumptions.assumeTrue(isProfile(DATAJPA));
-        SecurityUtil.setAuthUserId(ADMIN_ID);
-
-        ResultActions resultAction = perform(MockMvcRequestBuilders.get(REST_URL + "with-meals?id=" + USER_ID))
+        ResultActions resultAction = perform(MockMvcRequestBuilders.get(REST_URL + ADMIN_ID + "/with-meals"))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(USER_MATCHER.contentJson(user));
+                .andExpect(USER_MATCHER.contentJson(admin));
 
-        User userActual = USER_MATCHER.readFromJson(resultAction);
-        MealTestData.MEAL_MATCHER.assertMatch(userActual.getMeals(),
-                MealTestData.meals);
+        User adminActual = USER_MATCHER.readFromJson(resultAction);
+        MealTestData.MEAL_MATCHER.assertMatch(adminActual.getMeals(), MealTestData.adminMeal2, MealTestData.adminMeal1);
+
     }
 }
