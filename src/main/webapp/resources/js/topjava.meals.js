@@ -4,7 +4,11 @@ const mealAjaxUrl = "meals/";
 const ctx = {
     ajaxUrl: mealAjaxUrl,
     updateTable: function () {
-        filterTable();
+        $.ajax({
+            type: "GET",
+            url: mealAjaxUrl + "filter",
+            data: $("#filter").serialize()
+        }).done(refreshViewTable);
     }
 
 };
@@ -45,7 +49,6 @@ $(function () {
 });
 
 function clearFilter() {
-
     $("#filter")[0].reset();
     filterTable();
 }
@@ -55,7 +58,5 @@ function filterTable() {
         type: "GET",
         url: mealAjaxUrl + "filter",
         data: $("#filter").serialize()
-    }).done(function (data) {
-        ctx.datatableApi.clear().rows.add(data).draw();
-    });
+    }).done(refreshViewTable);
 }

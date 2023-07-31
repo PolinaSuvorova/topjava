@@ -2,7 +2,11 @@ const userAjaxUrl = "admin/users/";
 
 // https://stackoverflow.com/a/5064235/548473
 const ctx = {
-    ajaxUrl: userAjaxUrl
+    ajaxUrl: userAjaxUrl,
+    updateTable: function () {
+        $.get(userAjaxUrl, refreshViewTable);
+    },
+
 };
 
 // $(document).ready(function () {
@@ -45,3 +49,17 @@ $(function () {
         })
     );
 });
+
+function enabled(id,checked){
+    $.ajax({
+        type: "POST",
+        url: ctx.ajaxUrl + "enabled",
+        dataType: 'json',
+        data:  { id : id , enabled : checked }
+        //data:  { "id" : id , "enabled" : checked }
+            // data: "id=" + id +", enabled=" + checked
+    }).done(function () {
+        ctx.updateTable()
+        successNoty("Saved change enable/disable");
+    });
+}
