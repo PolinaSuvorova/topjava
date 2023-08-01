@@ -3,7 +3,6 @@ package ru.javawebinar.topjava.web.user;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 
@@ -36,9 +35,9 @@ public class AdminUIController extends AbstractUserController {
 
 
     @Override
-    @PostMapping(value = "/enabled", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/{id}/enable", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void enable(@RequestBody int id, @RequestBody boolean enable) {
+    public void enable(@PathVariable int id, @RequestBody boolean enable) {
         super.enable(id, enable);
-   }
+    }
 }

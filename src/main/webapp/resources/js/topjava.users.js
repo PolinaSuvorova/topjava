@@ -50,16 +50,17 @@ $(function () {
     );
 });
 
-function enabled(id,checked){
+function enabled(elementEnable,id,checked) {
     $.ajax({
         type: "POST",
-        url: ctx.ajaxUrl + "enabled",
-        dataType: 'json',
-        data:  { id : id , enabled : checked }
-        //data:  { "id" : id , "enabled" : checked }
-            // data: "id=" + id +", enabled=" + checked
+        url: ctx.ajaxUrl + id + "/enable",
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(checked),
     }).done(function () {
-        ctx.updateTable()
+        elementEnable.closest("tr").attr("row-user-enable", checked);
         successNoty("Saved change enable/disable");
+    }).fail(function (){
+        $(elementEnable).prop("checked", !checked)
     });
 }
