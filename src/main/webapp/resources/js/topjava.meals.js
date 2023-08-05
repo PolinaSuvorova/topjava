@@ -8,9 +8,30 @@ const ctx = {
             type: "GET",
             url: mealAjaxUrl + "filter",
             data: $("#filter").serialize()
-        }).done(updateTableByData);
+        }).done(updateTableByData)
+            .fail(
+
+            );
+
     }
 }
+$.ajaxSetup({
+    accepts: {
+        mycustomtype: "application/x-some-custom-type"
+    },
+
+// указываем как обрабатывать ответ
+    converters: {
+        "text mycustomtype": function (result) {
+
+            // возвращаем преобразованное значение ответа
+            return newresult;
+        }
+    },
+
+// Ожидаемый тип данных ("mycustomtype")
+    dataType: "mycustomtype"
+});
 
 function clearFilter() {
     $("#filter")[0].reset();
@@ -20,11 +41,15 @@ function clearFilter() {
 $(function () {
     makeEditable(
         $("#datatable").DataTable({
+            "ajax": {
+                "url": mealAjaxUrl,
+                "dataSrc": ""
+            },
             "paging": false,
             "info": true,
             "columns": [
                 {
-                    "data": "dateTime"
+                    "data": "dateTime",
                 },
                 {
                     "data": "description"
@@ -33,12 +58,14 @@ $(function () {
                     "data": "calories"
                 },
                 {
-                    "defaultContent": "Edit",
-                    "orderable": false
+                    "orderable": false,
+                    "defaultContent": "",
+                    "render": renderEditBtn
                 },
                 {
-                    "defaultContent": "Delete",
-                    "orderable": false
+                    "orderable": false,
+                    "defaultContent": "",
+                    "render": renderDeleteBtn
                 }
             ],
             "order": [
@@ -46,7 +73,11 @@ $(function () {
                     0,
                     "desc"
                 ]
-            ]
+            ],
+            "createdRow": function (row, data, dataIndex) {
+                $(row).attr("data-meal-excess", data.excess);
+            }
         })
     );
 });
+
