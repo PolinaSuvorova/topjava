@@ -11,6 +11,8 @@ import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
 import ru.javawebinar.topjava.util.DateTimeUtil;
+import ru.javawebinar.topjava.web.converter.LocDateTimeDeserializer;
+import ru.javawebinar.topjava.web.converter.LocDateTimeSerializer;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -41,7 +43,8 @@ public class Meal extends AbstractBaseEntity {
     @NotNull
     @DateTimeFormat(pattern = DateTimeUtil.DATE_TIME_PATTERN)
     @JsonFormat(pattern = DateTimeUtil.DATE_TIME_PATTERN)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonDeserialize(using = LocDateTimeDeserializer.class)
+    @JsonSerialize(using = LocDateTimeSerializer.class)
     private LocalDateTime dateTime;
 
     @Column(name = "description", nullable = false)
