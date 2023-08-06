@@ -41,10 +41,6 @@ public class Meal extends AbstractBaseEntity {
 
     @Column(name = "date_time", nullable = false)
     @NotNull
-    @DateTimeFormat(pattern = DateTimeUtil.DATE_TIME_PATTERN)
-    @JsonFormat(pattern = DateTimeUtil.DATE_TIME_PATTERN)
-    @JsonDeserialize(using = LocDateTimeDeserializer.class)
-    @JsonSerialize(using = LocDateTimeSerializer.class)
     private LocalDateTime dateTime;
 
     @Column(name = "description", nullable = false)
