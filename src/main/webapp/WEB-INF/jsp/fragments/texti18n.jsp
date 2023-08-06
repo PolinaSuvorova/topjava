@@ -4,16 +4,8 @@
 
 <script type="text/javascript">
     const i18n = {};
-    <c:choose>
-    <c:when test = "${param.obj == 'user'}">
-    i18n["addTitle"] = '<spring:message code="user.add"/>';
-    i18n["editTitle"] = '<spring:message code="user.edit"/>';
-    </c:when>
-    <c:when test = "${param.obj == 'meal'}">
-    i18n["addTitle"] = '<spring:message code="meal.add"/>';
-    i18n["editTitle"] = '<spring:message code="meal.edit"/>';
-    </c:when>
-    </c:choose>
+    i18n["addTitle"] = '<spring:message code="${param.obj}.add"/>';
+    i18n["editTitle"] = '<spring:message code="${param.obj}.edit"/>';
     <c:forEach var="key" items='<%=new String[]{"common.deleted","common.saved","common.enabled","common.disabled","common.errorStatus","common.confirm"}%>'>
     i18n["${key}"] = "<spring:message code="${key}"/>";
     </c:forEach>
