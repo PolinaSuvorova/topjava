@@ -15,23 +15,6 @@ const ctx = {
 
     }
 }
-$.ajaxSetup({
-    accepts: {
-        mycustomtype: "application/x-some-custom-type"
-    },
-
-// указываем как обрабатывать ответ
-    converters: {
-        "text mycustomtype": function (result) {
-
-            // возвращаем преобразованное значение ответа
-            return newresult;
-        }
-    },
-
-// Ожидаемый тип данных ("mycustomtype")
-    dataType: "mycustomtype"
-});
 
 function clearFilter() {
     $("#filter")[0].reset();
@@ -50,6 +33,12 @@ $(function () {
             "columns": [
                 {
                     "data": "dateTime",
+                    "render": function (data, type, row) {
+                        if (type === 'display') {
+                            return data.replace('T', ' ').substr(0,16);
+                        }
+                        return data;
+                    }
                 },
                 {
                     "data": "description"
