@@ -9,11 +9,7 @@ const ctx = {
             url: mealAjaxUrl + "filter",
             data: $("#filter").serialize()
         }).done(updateTableByData)
-            .fail(
-
-            );
-
-    }
+     }
 }
 
 function clearFilter() {
@@ -68,5 +64,7 @@ $(function () {
             }
         })
     );
+    $("#dateTime").datetimepicker({
+        format: 'Y-m-d H:i'
+    });
 });
-
