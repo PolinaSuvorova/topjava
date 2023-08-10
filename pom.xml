@@ -43,7 +43,7 @@
         <!--DB-->
         <postgresql.version>42.6.0</postgresql.version>
         <!--    Tests  -->
-        <junit.jupiter.version>5.9.2</junit.jupiter.version>
+        <junit.jupiter.version>5.9.3</junit.jupiter.version>
         <assertj.version>3.24.2</assertj.version>
         <hamcrest.version>2.2</hamcrest.version>
     </properties>
@@ -163,6 +163,11 @@
             <artifactId>spring-security-config</artifactId>
             <version>${spring.security.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-taglibs</artifactId>
+            <version>${spring.security.version}</version>
+        </dependency>
 
         <!--- ORM -->
         <dependency>
@@ -250,7 +255,7 @@
                     <artifactId>jquery</artifactId>
                 </exclusion>
                 <exclusion>
-<!--                https://getbootstrap.com/docs/4.5/components/popovers         -->
+                    <!--                https://getbootstrap.com/docs/4.5/components/popovers         -->
                     <groupId>org.webjars</groupId>
                     <artifactId>popper.js</artifactId>
                 </exclusion>
@@ -301,12 +306,6 @@
             <artifactId>junit-jupiter-engine</artifactId>
             <version>${junit.jupiter.version}</version>
             <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <artifactId>hamcrest-all</artifactId>
-                    <groupId>org.hamcrest</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
@@ -331,14 +330,6 @@
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
             <version>${assertj.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!--        https://youtrack.jetbrains.com/issue/IDEA-231927  -->
-        <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-launcher</artifactId>
-            <version>1.9.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
