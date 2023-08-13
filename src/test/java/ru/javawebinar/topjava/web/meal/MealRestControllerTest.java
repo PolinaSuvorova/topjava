@@ -6,9 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
-import ru.javawebinar.topjava.util.exception.ErrorInfo;
 import ru.javawebinar.topjava.util.exception.ErrorType;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
@@ -119,6 +120,7 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isUnprocessableEntity());
     }
     @Test
+    @Transactional(propagation = Propagation.NEVER)
     void updateWithErrorDuplicateDate() throws Exception {
         Meal updated = getUpdated();
         updated.setDateTime(meal2.getDateTime());
@@ -126,10 +128,12 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(user))
                 .content(JsonUtil.writeValue(updated)))
                 .andDo(print())
+                .andExpect(jsonPath("$.type").value(ErrorType.VALIDATION_ERROR))
                 .andExpect(status().isUnprocessableEntity());
 
     }
     @Test
+    @Transactional(propagation = Propagation.NEVER)
     void createWithErrorDuplicateDate() throws Exception {
         Meal created = new Meal(null, meal2.getDateTime(), "test", 130);
 

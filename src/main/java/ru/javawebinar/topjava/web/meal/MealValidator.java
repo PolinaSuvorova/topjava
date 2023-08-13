@@ -50,7 +50,7 @@ public class MealValidator implements Validator {
                 return;
             }
             List<Meal> mealsCheck = mealDb.stream().filter(meal -> !Objects.equals(meal.getId(), id)).toList();
-            if (mealsCheck.size() == 0) {
+            if (mealsCheck.size() == 0){
                 return;
             }
             errors.rejectValue("dateTime", EXCEPTION_DUPLICATE_DATE_TIME);

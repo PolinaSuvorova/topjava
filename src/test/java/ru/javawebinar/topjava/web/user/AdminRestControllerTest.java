@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.User;
@@ -138,6 +140,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isUnprocessableEntity());
     }
     @Test
+    @Transactional(propagation = Propagation.NEVER)
     void createWithErrorDuplicate() throws Exception {
         User newUser = getNew();
         newUser.setEmail(admin.getEmail());
@@ -149,6 +152,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isUnprocessableEntity());
     }
     @Test
+    @Transactional(propagation = Propagation.NEVER)
     void updateWithDuplicate() throws Exception {
         User updated = getUpdated();
         updated.setEmail(admin.getEmail());
