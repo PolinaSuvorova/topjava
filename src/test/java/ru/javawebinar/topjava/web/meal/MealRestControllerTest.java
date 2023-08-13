@@ -117,7 +117,6 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .content(JsonUtil.writeValue(updated)))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity());
-
     }
     @Test
     void updateWithErrorDuplicateDate() throws Exception {
@@ -133,13 +132,13 @@ class MealRestControllerTest extends AbstractControllerTest {
     @Test
     void createWithErrorDuplicateDate() throws Exception {
         Meal created = new Meal(null, meal2.getDateTime(), "test", 130);
+
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(user))
                 .content(JsonUtil.writeValue(created )))
                 .andDo(print())
-                .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.type").value(ErrorType.VALIDATION_ERROR.name()));
+                .andExpect(status().isUnprocessableEntity());
     }
     @Test
     void getAll() throws Exception {

@@ -122,23 +122,43 @@ class AdminRestControllerTest extends AbstractControllerTest {
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(admin))
-                .content(JsonUtil.writeValue(newUser)))
+                .content(jsonWithPassword(newUser, newUser.getPassword())))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity());
       }
-
     @Test
-    void createWithErrorDublicate() throws Exception {
+    void updateWithError() throws Exception {
+        User updated = getUpdated();
+        updated.setName(null);
+        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(admin))
+                .content(jsonWithPassword(updated, updated.getPassword())))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
+    }
+    @Test
+    void createWithErrorDuplicate() throws Exception {
         User newUser = getNew();
         newUser.setEmail(admin.getEmail());
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(admin))
-                .content(JsonUtil.writeValue(newUser)))
+                .content(jsonWithPassword(newUser, newUser.getPassword())))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity());
     }
-
+    @Test
+    void updateWithDuplicate() throws Exception {
+        User updated = getUpdated();
+        updated.setEmail(admin.getEmail());
+        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(admin))
+                .content(jsonWithPassword(updated, updated.getPassword())))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
+    }
     @Test
     void getAll() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL)
