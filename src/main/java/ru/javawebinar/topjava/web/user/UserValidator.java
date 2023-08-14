@@ -7,7 +7,6 @@ import org.springframework.validation.Validator;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 import ru.javawebinar.topjava.to.UserTo;
-import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.util.Objects;
 
