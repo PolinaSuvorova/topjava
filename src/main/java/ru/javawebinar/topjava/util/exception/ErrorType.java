@@ -8,6 +8,10 @@ public enum ErrorType {
 
     private final String titleError;
 
+    public String getTitleError() {
+        return titleError;
+    }
+
     ErrorType(String titleError) {
         this.titleError = titleError;
     }

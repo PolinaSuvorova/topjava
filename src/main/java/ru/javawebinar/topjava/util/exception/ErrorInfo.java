@@ -10,7 +10,7 @@ public class ErrorInfo {
     public ErrorInfo(CharSequence url, ErrorType type, String... details) {
         this.url = url.toString();
         this.type = type;
-        this.titleError = type.toString();
+        this.titleError = type.getTitleError();
         this.details = details;
     }
 
