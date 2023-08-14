@@ -1,20 +1,23 @@
 package ru.javawebinar.topjava.web.user;
 
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import ru.javawebinar.topjava.UserTestData;
-import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.UserService;
-import ru.javawebinar.topjava.util.exception.ErrorInfo;
+import ru.javawebinar.topjava.util.exception.ErrorType;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
-import ru.javawebinar.topjava.web.json.JsonUtil;
+
+import java.util.Collections;
+import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -119,15 +122,16 @@ class AdminRestControllerTest extends AbstractControllerTest {
 
     @Test
     void createWithError() throws Exception {
-        User newUser = getNew();
-        newUser.setEmail(null);
+        User newUser = new User(null, null, "new@gmail.com", "newPass", 1555, false, new Date(), Collections.singleton(Role.USER));
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(admin))
                 .content(jsonWithPassword(newUser, newUser.getPassword())))
                 .andDo(print())
-                .andExpect(status().isUnprocessableEntity());
-      }
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.type", Matchers.containsString(ErrorType.VALIDATION_ERROR.name())));
+    }
+
     @Test
     void updateWithError() throws Exception {
         User updated = getUpdated();
@@ -137,10 +141,11 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(admin))
                 .content(jsonWithPassword(updated, updated.getPassword())))
                 .andDo(print())
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.type", Matchers.containsString(ErrorType.VALIDATION_ERROR.name())));
     }
+
     @Test
-    @Transactional(propagation = Propagation.NEVER)
     void createWithErrorDuplicate() throws Exception {
         User newUser = getNew();
         newUser.setEmail(admin.getEmail());
@@ -149,8 +154,10 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(admin))
                 .content(jsonWithPassword(newUser, newUser.getPassword())))
                 .andDo(print())
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.type", Matchers.containsString(ErrorType.VALIDATION_ERROR.name())));
     }
+
     @Test
     @Transactional(propagation = Propagation.NEVER)
     void updateWithDuplicate() throws Exception {
@@ -161,8 +168,10 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(admin))
                 .content(jsonWithPassword(updated, updated.getPassword())))
                 .andDo(print())
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.type", Matchers.containsString(ErrorType.VALIDATION_ERROR.name())));
     }
+
     @Test
     void getAll() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL)

@@ -7,7 +7,10 @@
     <%-- user.add/user.edit or meal.add/meal.edit --%>
     i18n["addTitle"] = '<spring:message code="${param.page}.add"/>';
     i18n["editTitle"] = '<spring:message code="${param.page}.edit"/>';
-
+    i18n["error.appError"] = '<spring:message code="error.appError"/>';
+    i18n["error.dataNotFound"] = '<spring:message code="error.dataNotFound"/>';
+    i18n["error.dataError"] = '<spring:message code="error.dataError"/>';
+    i18n["error.validationError"] = '<spring:message code="error.validationError"/>';
     <c:forEach var='key' items='${["common.deleted", "common.saved", "common.enabled", "common.disabled", "common.errorStatus", "common.confirm"]}'>
     i18n['${key}'] = '<spring:message code="${key}"/>';
     </c:forEach>

@@ -1,23 +1,18 @@
 package ru.javawebinar.topjava.util.exception;
-import org.springframework.http.HttpStatus;
 public enum ErrorType {
-    APP_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"error.appError"),
-    DATA_NOT_FOUND(HttpStatus.UNPROCESSABLE_ENTITY,"error.dataNotFound"),
-    DATA_ERROR(HttpStatus.CONFLICT,"error.dataError"),
-    VALIDATION_ERROR(HttpStatus.UNPROCESSABLE_ENTITY,"error.validationError");
+    APP_ERROR("error.appError"),
+    DATA_NOT_FOUND("error.dataNotFound"),
+    DATA_ERROR("error.dataError"),
+    VALIDATION_ERROR("error.validationError");
 
-    private final HttpStatus status;
     private final String titleError;
-    ErrorType(HttpStatus httpStatus,String titleError) {
-        this.status = httpStatus;
+    ErrorType(String titleError) {
         this.titleError = titleError;
     }
 
-    public HttpStatus getStatus(  ){
-        return status;
-    }
-
-    public String getTitleError(  ){
-        return titleError;
+    @Override
+    public String toString() {
+        String titleError1 = titleError;
+        return titleError1;
     }
 }

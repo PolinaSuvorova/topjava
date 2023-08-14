@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-import ru.javawebinar.topjava.AuthorizedUser;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 import ru.javawebinar.topjava.to.UserTo;
@@ -14,9 +13,8 @@ import java.util.Objects;
 
 @Component
 public class UserValidator implements Validator {
-    private final UserRepository repository;
-
     private static final String EXCEPTION_DUPLICATE_EMAIL = "exception.user.duplicateEmail";
+    private final UserRepository repository;
 
 
     public UserValidator(UserRepository repository) {
@@ -35,11 +33,6 @@ public class UserValidator implements Validator {
         if (UserTo.class.isAssignableFrom(target.getClass())) {
             UserTo userTo = (UserTo) target;
             id = userTo.getId();
-            if (id == null) {
-               if ( SecurityUtil.safeGet() != null ) {
-                  id = SecurityUtil.authUserId();
-               }
-            }
             email = userTo.getEmail();
         } else {
             User user = (User) target;

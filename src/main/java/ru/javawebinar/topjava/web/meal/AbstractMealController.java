@@ -3,7 +3,6 @@ package ru.javawebinar.topjava.web.meal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -27,13 +26,8 @@ public abstract class AbstractMealController {
 
     @InitBinder
     private void initBinder(WebDataBinder binder) {
-        binder.setValidator(mealValidator);
+        binder.addValidators(mealValidator);
     }
-
-    @Autowired
-    protected MessageSource messageSource;
-
-    public static final String EXCEPTION_DUPLICATE_DATE_TIME = "exception.meal.duplicateDateTime";
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
