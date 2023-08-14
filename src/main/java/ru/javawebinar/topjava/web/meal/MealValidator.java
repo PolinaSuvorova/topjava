@@ -9,7 +9,6 @@ import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Component
 public class MealValidator implements Validator {
@@ -31,16 +30,16 @@ public class MealValidator implements Validator {
         LocalDateTime localDateTime;
         int userId = SecurityUtil.authUserId();
 
-            Meal meal = (Meal) target;
-            id = meal.getId();
-            localDateTime = meal.getDateTime();
+        Meal meal = (Meal) target;
+        id = meal.getId();
+        localDateTime = meal.getDateTime();
 
         if (localDateTime != null) {
-           if (repository.getBetweenHalfOpen(localDateTime, localDateTime.plusNanos(1000), userId)
+            if (repository.getBetweenHalfOpen(localDateTime, localDateTime.plusNanos(1000), userId)
                     .stream()
                     .filter(meal1 -> !(meal1.getId().equals(id))).findFirst().isPresent()) {
-               errors.rejectValue("dateTime", EXCEPTION_DUPLICATE_DATE_TIME);
-           }
+                errors.rejectValue("dateTime", EXCEPTION_DUPLICATE_DATE_TIME);
+            }
         }
     }
 }

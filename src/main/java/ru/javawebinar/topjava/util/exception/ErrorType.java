@@ -9,10 +9,4 @@ public enum ErrorType {
     ErrorType(String titleError) {
         this.titleError = titleError;
     }
-
-    @Override
-    public String toString() {
-        String titleError1 = titleError;
-        return titleError1;
-    }
 }
