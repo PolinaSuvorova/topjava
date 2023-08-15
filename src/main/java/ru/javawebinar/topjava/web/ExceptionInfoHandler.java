@@ -84,6 +84,7 @@ public class ExceptionInfoHandler {
         if (description.length != 0) {
             return new ErrorInfo(req.getRequestURL(), errorType, description);
         }
-        return new ErrorInfo(req.getRequestURL(), errorType, rootCause.getLocalizedMessage());
+        return new ErrorInfo(req.getRequestURL(), errorType,
+                description.length != 0 ? description : new String[]{rootCause.getLocalizedMessage()});
     }
 }

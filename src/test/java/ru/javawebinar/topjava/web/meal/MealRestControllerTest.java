@@ -141,7 +141,6 @@ class MealRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    @Transactional(propagation = Propagation.NEVER)
     void createWithErrorDuplicateDate() throws Exception {
         Meal created = new Meal(null, meal2.getDateTime(), "test", 130);
 

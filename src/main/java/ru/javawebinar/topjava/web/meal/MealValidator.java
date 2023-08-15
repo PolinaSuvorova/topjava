@@ -5,7 +5,6 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDateTime;
@@ -21,23 +20,20 @@ public class MealValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return Meal.class.isAssignableFrom(clazz) || MealTo.class.isAssignableFrom(clazz);
+        return Meal.class.isAssignableFrom(clazz);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
-        Integer id;
-        LocalDateTime localDateTime;
         int userId = SecurityUtil.authUserId();
-
         Meal meal = (Meal) target;
-        id = meal.getId();
-        localDateTime = meal.getDateTime();
+        Integer id = meal.getId();
+        LocalDateTime localDateTime = meal.getDateTime();
 
         if (localDateTime != null) {
             if (repository.getBetweenHalfOpen(localDateTime, localDateTime.plusNanos(1000), userId)
                     .stream()
-                    .filter(meal1 -> !(meal1.getId().equals(id))).findFirst().isPresent()) {
+                    .anyMatch(m -> !(m.getId().equals(id)))) {
                 errors.rejectValue("dateTime", EXCEPTION_DUPLICATE_DATE_TIME);
             }
         }

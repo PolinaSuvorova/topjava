@@ -96,7 +96,7 @@ class ProfileRestControllerTest extends AbstractControllerTest {
 
     @Test
     void update() throws Exception {
-        UserTo updatedTo = new UserTo(user.getId(), "newName", "user@yandex.ru", "newPassword", 1500);
+        UserTo updatedTo = new UserTo(null, "newName", "user@yandex.ru", "newPassword", 1500);
         perform(MockMvcRequestBuilders.put(REST_URL).contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(user))
                 .content(JsonUtil.writeValue(updatedTo)))
@@ -108,7 +108,7 @@ class ProfileRestControllerTest extends AbstractControllerTest {
 
     @Test
     void updateWithError() throws Exception {
-        UserTo updatedTo = new UserTo(user.getId(), "newName", "", "newPassword", 1500);
+        UserTo updatedTo = new UserTo(null, "newName", "", "newPassword", 1500);
         perform(MockMvcRequestBuilders.put(REST_URL).contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(user))
                 .content(JsonUtil.writeValue(updatedTo)))
@@ -118,9 +118,8 @@ class ProfileRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    @Transactional(propagation = Propagation.NEVER)
     void updateWithDuplicate() throws Exception {
-        UserTo updatedTo = new UserTo(user.getId(), "newName", admin.getEmail(), "newPassword", 1500);
+        UserTo updatedTo = new UserTo(null, "newName", admin.getEmail(), "newPassword", 1500);
         perform(MockMvcRequestBuilders.put(REST_URL).contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(user))
                 .content(JsonUtil.writeValue(updatedTo)))
